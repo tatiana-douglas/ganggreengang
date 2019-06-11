@@ -6,7 +6,7 @@ setup-environment: &setup-environment
 #  working_directory: /home/circleci/go/src/github.com/hyperledger/fabric
 
 configure-environment: &configure-environment
-  - run: apt-get update && apt-get install curl sshpass -y
+  - run: sudo apt-get update && sudo apt-get install curl sshpass -y
   - run: curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
   - run: chmod +x ./kubectl
   - run: sudo mv ./kubectl /usr/local/bin/kubectl
