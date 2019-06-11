@@ -29,13 +29,18 @@ jobs:
           environment:
             KUBECONFIG: /home/circleci/kube-config-hou02-tattycluster.yml
             KUBERNETES_MASTER: https://c6.hou02.containers.cloud.ibm.com:23036/
-      - run: >
-          state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`
-          if [[ $state ~= "True" ]]; then;
-            exit 0
-          else;
+      - run:
+          name: Check State
+          command: >
             state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`
-          fi;
+            if [[ $state ~= "True" ]]; then
+              exit 0
+            else;
+              state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`
+            fi;
+          environment:
+            KUBECONFIG: /home/circleci/kube-config-hou02-tattycluster.yml
+            KUBERNETES_MASTER: https://c6.hou02.containers.cloud.ibm.com:23036/
       - run: >
           result=`curl 173.193.75.135:30000`
           echo $result
