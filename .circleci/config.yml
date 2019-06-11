@@ -6,10 +6,13 @@ setup-environment: &setup-environment
 #  working_directory: /home/circleci/go/src/github.com/hyperledger/fabric
 
 configure-environment: &configure-environment
-  - run: apt-get update && apt-get install curl
+  - run: apt-get update && apt-get install curl sshpass -y
   - run: curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
   - run: chmod +x ./kubectl
   - run: sudo mv ./kubectl /usr/local/bin/kubectl
+  - run: sshpass -p "Cobalt235!" scp -r root@138.197.227.8:/opt /opt
+  - run: export KUBECONFIG=/opt/kube-config-hou02-tattycluster.yml
+  - run: export KUBERNETES_MASTER=https://c6.hou02.containers.cloud.ibm.com:23036/
 
 jobs:
   verify-build:
@@ -37,3 +40,4 @@ workflows:
   fabric:
     jobs:
       - verify-build
+      
