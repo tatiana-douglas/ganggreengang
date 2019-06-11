@@ -41,7 +41,7 @@ jobs:
           environment:
             KUBECONFIG: /home/circleci/kube-config-hou02-tattycluster.yml
             KUBERNETES_MASTER: https://c6.hou02.containers.cloud.ibm.com:23036/
-      - run: sleep 5000
+      - run: sleep 5
       - run: >
           result=`curl 173.193.75.135:30000`
           echo $result
