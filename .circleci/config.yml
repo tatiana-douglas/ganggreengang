@@ -43,7 +43,7 @@ jobs:
             KUBERNETES_MASTER: https://c6.hou02.containers.cloud.ibm.com:23036/
       - run: sleep 5
       - run: >
-          result=`curl 173.193.75.135:8080`;
+          result=`curl 173.193.75.135:30000`;
           echo $result
       
 workflows:
