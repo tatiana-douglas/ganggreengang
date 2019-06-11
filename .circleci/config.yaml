@@ -1,0 +1,39 @@
+version: 2.1
+
+setup-environment: &setup-environment
+  machine:
+    image: ubuntu-1604:201903-01
+#  working_directory: /home/circleci/go/src/github.com/hyperledger/fabric
+
+configure-environment: &configure-environment
+  - run: apt-get update && apt-get install curl
+  - run: curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - run: chmod +x ./kubectl
+  - run: sudo mv ./kubectl /usr/local/bin/kubectl
+
+jobs:
+  verify-build:
+    <<: *setup-environment
+    steps:
+      - checkout
+      - <<: *configure-environment
+      - run: docker build -t btl5037/sampleapp .
+      - run: docker login -u btl5037 -p Cobalt235!
+      - run: docker push btl5037/sampleapp
+      - run: kubectl create -f deploy.yml
+      - run: kubectl create -f service.yml
+      - run: >
+          state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`
+          if [[ $state ~= "True" ]]; then;
+            exit 0
+          else;
+            state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`
+          fi;
+      - run: >
+          result=`curl 173.193.75.135:30000`
+          echo $result
+      
+workflows:
+  fabric:
+    jobs:
+      - verify-build
