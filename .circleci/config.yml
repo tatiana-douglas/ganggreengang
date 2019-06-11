@@ -44,11 +44,11 @@ jobs:
       - run:
           name: Check State
           command: >
-            state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`
+            state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`;
             if [[ $state ~= "True" ]]; then
               exit 0
             else;
-              state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`
+              state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`;
             fi;
           environment:
             KUBECONFIG: /home/circleci/kube-config-hou02-tattycluster.yml
