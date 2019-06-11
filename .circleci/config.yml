@@ -18,6 +18,18 @@ jobs:
       - run: docker login -u btl5037 -p Cobalt235!
       - run: docker push btl5037/sampleapp
       - run: 
+          name: Delete Deployment
+          command: kubectl delete -f deploy.yml || true
+          environment:
+            KUBECONFIG: /home/circleci/kube-config-hou02-tattycluster.yml
+            KUBERNETES_MASTER: https://c6.hou02.containers.cloud.ibm.com:23036/
+      - run: 
+          name: Delete Service
+          command: kubectl delete -f service.yml || true
+          environment:
+            KUBECONFIG: /home/circleci/kube-config-hou02-tattycluster.yml
+            KUBERNETES_MASTER: https://c6.hou02.containers.cloud.ibm.com:23036/
+      - run: 
           name: Create Deployment
           command: kubectl create -f deploy.yml
           environment:
