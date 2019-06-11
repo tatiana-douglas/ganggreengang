@@ -3,23 +3,19 @@ version: 2.1
 setup-environment: &setup-environment
   machine:
     image: ubuntu-1604:201903-01
-#  working_directory: /home/circleci/go/src/github.com/hyperledger/fabric
-
-configure-environment: &configure-environment
-  - run: sudo apt-get update && sudo apt-get install curl sshpass -y
-  - run: curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-  - run: chmod +x ./kubectl
-  - run: sudo mv ./kubectl /usr/local/bin/kubectl
-  - run: sshpass -p "Cobalt235!" scp -r root@138.197.227.8:/opt /opt
-  - run: export KUBECONFIG=/opt/kube-config-hou02-tattycluster.yml
-  - run: export KUBERNETES_MASTER=https://c6.hou02.containers.cloud.ibm.com:23036/
 
 jobs:
   verify-build:
     <<: *setup-environment
     steps:
       - checkout
-      - <<: *configure-environment
+      - run: sudo apt-get update && sudo apt-get install curl sshpass -y
+      - run: curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+      - run: chmod +x ./kubectl
+      - run: sudo mv ./kubectl /usr/local/bin/kubectl
+      - run: sshpass -p "Cobalt235!" scp -r root@138.197.227.8:/opt /opt
+      - run: export KUBECONFIG=/opt/kube-config-hou02-tattycluster.yml
+      - run: export KUBERNETES_MASTER=https://c6.hou02.containers.cloud.ibm.com:23036/
       - run: docker build -t btl5037/sampleapp .
       - run: docker login -u btl5037 -p Cobalt235!
       - run: docker push btl5037/sampleapp
