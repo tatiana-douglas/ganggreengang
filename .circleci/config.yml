@@ -19,6 +19,7 @@ jobs:
       - run: docker build -t btl5037/sampleapp .
       - run: docker login -u btl5037 -p Cobalt235!
       - run: docker push btl5037/sampleapp
+      - run: printenv
       - run: kubectl create -f deploy.yml
       - run: kubectl create -f service.yml
       - run: >
