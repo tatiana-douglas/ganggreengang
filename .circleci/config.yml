@@ -14,14 +14,21 @@ jobs:
       - run: chmod +x ./kubectl
       - run: sudo mv ./kubectl /usr/local/bin/kubectl
       - run: sshpass -p "Cobalt235!" scp -r root@138.197.227.8:/opt/* /home/circleci
-      - run: export KUBECONFIG=/home/circleci/kube-config-hou02-tattycluster.yml
-      - run: export KUBERNETES_MASTER=https://c6.hou02.containers.cloud.ibm.com:23036/
       - run: docker build -t btl5037/sampleapp .
       - run: docker login -u btl5037 -p Cobalt235!
       - run: docker push btl5037/sampleapp
-      - run: printenv
-      - run: kubectl create -f deploy.yml
-      - run: kubectl create -f service.yml
+      - run: 
+          name: Create Deployment
+          command: kubectl create -f deploy.yml
+          environment:
+            KUBECONFIG: /home/circleci/kube-config-hou02-tattycluster.yml
+            KUBERNETES_MASTER: https://c6.hou02.containers.cloud.ibm.com:23036/
+      - run: 
+          name: Create Service
+          command: kubectl create -f service.yml
+          environment:
+            KUBECONFIG: /home/circleci/kube-config-hou02-tattycluster.yml
+            KUBERNETES_MASTER: https://c6.hou02.containers.cloud.ibm.com:23036/
       - run: >
           state=`kubectl describe pod -n kube-system kube-apiserver-docker-for-desktop | grep Ready | tail -n 1`
           if [[ $state ~= "True" ]]; then;
